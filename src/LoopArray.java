@@ -27,17 +27,17 @@ public class LoopArray<E> {
         size++;
     }
 
-
     public E poll() {
         if (isEmpty()) {
             throw new NullPointerException();
         }
         size--;
-        return array[front++];
+        int newIdx = front++ % array.length;
+        return array[newIdx];
     }
 
     public E peek() {
-        return array[front];
+        return array[front % array.length];
     }
 
     public int size() {
@@ -55,10 +55,16 @@ public class LoopArray<E> {
 
     private void resize(int newCapacity) {
         E[] newArr = (E[]) new Object[newCapacity];
-        for (int i = 0; i < array.length; i++) {
-            newArr[i] = array[i];
+        int newArrIdx = 0;
+        for (int i = front; i < array.length; i++) {
+            newArr[newArrIdx++] = array[i];
+        }
+        for (int j = 0; j < front; j++) {
+            newArr[newArrIdx++] = array[j];
         }
         array = newArr;
+        front = 0;
+        tail = size;
     }
 
     public void print() {
@@ -72,6 +78,7 @@ public class LoopArray<E> {
         }
         sb.append(']');
         System.out.println(sb.toString());
+        System.out.println("Capacity: " + array.length);
     }
 
     public static void main(String[] args) {
@@ -93,5 +100,16 @@ public class LoopArray<E> {
         array.poll();
         array.print();
         array.size();
+        array.offer(1);
+        array.offer(2);
+        array.offer(3);
+        array.poll();
+        array.offer(4);
+        array.offer(5);
+        array.print();
+        System.out.println(array.poll());
+        System.out.println(array.poll());
+        System.out.println(array.poll());
+        System.out.println(array.poll());
     }
 }
